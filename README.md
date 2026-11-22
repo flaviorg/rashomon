@@ -270,7 +270,7 @@ With none set, the model is `fake`: offline, deterministic, and it only knows th
 
 ```bash
 pip install -e ".[dev]"
-make check     # ruff, format check, 78 offline tests, graph drift check
+make check     # ruff, format check, 79 offline tests, graph drift check
 ```
 
 Everything runs offline against the scripted model, including the full three-round loop, pausing and resuming across processes through SQLite, the cache hit, Store precedent, invalid answers, the approval gate and the CLI. CI runs on Python 3.11, 3.12 and 3.13.

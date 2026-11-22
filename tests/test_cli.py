@@ -97,7 +97,7 @@ def test_parse_answers_numbers_and_values():
 
 def test_graph_and_version_commands():
     assert "diff_plans" in _run("graph").output
-    assert _run("version").output.strip() == "0.1.0"
+    assert _run("version").output.strip() == "0.1.1"
 
 
 def test_backtest_on_bundled_sample():

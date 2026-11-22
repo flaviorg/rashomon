@@ -97,19 +97,19 @@ def build_spec(state: dict) -> str:
     out += ["", "## Out of scope", ""]
     out += [f"- {label} ({letters(lenses)})" for label, lenses in scope] or ["- (nothing two lenses agreed on)"]
 
-    out += ["", "## Test stubs", "", "```python", "import pytest", ""]
+    out += ["", "## Test stubs", "", "```python", "import pytest"]
     for label, _ in criteria + edge:
         b = behaviours.get(label)
         if not b:
             continue
         out += [
             "",
+            "",
             f"def {_test_name(b)}():",
             f'    """Given {b["given"]}.',
             f"    When {b['when']}.",
             f'    Then {b["then"]}."""',
             '    pytest.skip("not implemented")',
-            "",
         ]
     out += ["```", "", "## How this was produced", ""]
     out.append(

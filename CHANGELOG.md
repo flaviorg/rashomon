@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-11-22
+
+### Fixed
+
+- Generated test stubs no longer end with a blank line inside the code block, so `ruff format`
+  (which also formats Python blocks in Markdown) leaves the spec and `docs/sample-spec.md` alone.
+  This made CI fail on v0.1.0.
+
 ## [0.1.0] - 2026-11-21
 
 ### Added
@@ -33,4 +41,5 @@ All notable changes to this project are documented here. The format follows
 - Scripted offline model, `examples/invoice_app` sample repo and ticket, `rashomon demo`,
   generated Mermaid diagram and demo SVG, CI on Python 3.11 to 3.13.
 
+[0.1.1]: https://github.com/flaviorg/rashomon/releases/tag/v0.1.1
 [0.1.0]: https://github.com/flaviorg/rashomon/releases/tag/v0.1.0
