@@ -1,0 +1,37 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	ground(ground)
+	dispatch(dispatch)
+	interpret(interpret)
+	diff_plans(diff_plans<hr/><small><em>defer = True</em></small>)
+	score_convergence(score_convergence)
+	draft_questions(draft_questions)
+	ask(ask)
+	write_spec(write_spec)
+	remember(remember)
+	approve_post(approve_post)
+	post_comment(post_comment)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> ground;
+	approve_post -.-> __end__;
+	approve_post -.-> post_comment;
+	ask --> dispatch;
+	diff_plans --> score_convergence;
+	dispatch -.-> interpret;
+	draft_questions --> ask;
+	ground --> dispatch;
+	interpret --> diff_plans;
+	remember -.-> __end__;
+	remember -.-> approve_post;
+	score_convergence -.-> draft_questions;
+	score_convergence -.-> write_spec;
+	write_spec --> remember;
+	post_comment --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc

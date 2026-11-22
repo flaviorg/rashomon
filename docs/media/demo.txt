@@ -1,0 +1,125 @@
+rashomon  Export invoices to CSV
+ticket export-invoices · repo invoice_app · model fake · thread export-invoices-demo
+
+● ground  17 files · 5 functions, 4 tables, 3 routes, 3 classes, 2 components, 2 columns, 2 modules · 20 text 
+hits (python)
+  table     customers                    app/models.py:7
+  table     invoices                     app/models.py:16
+  route     GET /invoices                app/routes/invoices.py:5
+  table     customers                    db/schema.sql:1
+  table     invoices                     db/schema.sql:7
+  … 16 more
+
+● round 1  five lenses read the ticket independently
+  A Literal PM    S  4 files (1 new) · 3 assumptions · 4 behaviours
+  B Minimal diff  XS 3 files (0 new) · 3 assumptions · 3 behaviours
+  C Defensive     M  4 files (2 new) · 3 assumptions · 5 behaviours
+      guard untracked: app/utils/csv_helpers.py is not in git ls-files: marked new
+  D Performance   L  4 files (1 new) · 3 assumptions · 4 behaviours
+  E UX            S  4 files (2 new) · 3 assumptions · 4 behaviours
+
+divergence matrix                                                                                             
+                                                                                                              
+ open point             impact   A literal       B minimal       C defensive     D performance   E ux         
+ ──────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+ amount format             2.4   formatted cu…   integer cents   integer cents   integer cents   formatted c… 
+ export scope              2.4   the filtered…   the filtered…   all rows        all rows        all rows     
+ API changes               1.6   GET /invoice…   GET /invoice…   GET /invoice…   POST /invoic…   GET /invoic… 
+ delivery method           1.2   synchronous …   synchronous …   synchronous …   background j…   synchronous… 
+ schema changes            0.8   none            none            none            add table ex…   none         
+ file: app/export/cs…      1.2   yes             -               yes             -               yes          
+ file: app/services/…      1.2   yes             yes             -               -               -            
+ behaviour: Given fi…      0.8   -               -               yes             yes             yes          
+ behaviour: Given th…      0.8   yes             yes             -               -               -            
+                                                                                                              
+  + 15 more file / behaviour / scope differences (in the spec)
+  amount format: B,C,D integer cents · A,E formatted currency ($1,234.50)
+  export scope: C,D,E all rows · A,B the filtered view
+  API changes: A,C,E GET /invoices/export.csv · B GET /invoices?format=csv · D POST /invoices/exports; GET 
+/invoices/exports/{job_id}
+  delivery method: A,B,C,E synchronous download · D background job, emailed link
+  schema changes: A,B,C,E none · D add table export_jobs (id, status, file_path, requested_by, created_at)
+
+  convergence 0.43 ██████████░░░░░░░░░│░░░░ threshold 0.80  below threshold: asking
+  guard invented_option: amount format: dropped 'Let the user choose per export' (no plan said it)
+
+● ask  3 question(s), options are values the plans took
+
+  q1 How should amounts appear in the CSV?  (impact 2.4)
+     1. integer cents  B,C,D  ← recommended: majority (B,C,D)
+     2. formatted currency ($1,234.50)  A,E
+
+  q2 When finance clicks Export, which invoices should end up in the file?  (impact 2.4)
+     1. all rows  C,D,E  ← recommended: majority (C,D,E)
+     2. the filtered view  A,B
+
+  q3 Which endpoint should serve the export?  (impact 1.6)
+     1. GET /invoices/export.csv  A,C,E  ← recommended: majority (A,C,E)
+     2. GET /invoices?format=csv  B
+     3. POST /invoices/exports; GET /invoices/exports/{job_id}  D
+
+  q1 → formatted currency ($1,234.50)  (scripted demo answer)
+  q2 → the filtered view  (scripted demo answer)
+  q3 → GET /invoices/export.csv  (scripted demo answer)
+
+● round 2  five lenses read the ticket independently · 3 settled decisions in the prompt
+  A Literal PM    S  4 files (1 new) · 3 assumptions · 4 behaviours
+  B Minimal diff  XS 3 files (0 new) · 3 assumptions · 3 behaviours
+  C Defensive     M  5 files (2 new) · 3 assumptions · 5 behaviours
+      guard untracked: app/utils/csv_helpers.py is not in git ls-files: marked new
+  D Performance   L  5 files (1 new) · 3 assumptions · 4 behaviours
+  E UX            S  5 files (2 new) · 3 assumptions · 4 behaviours
+
+divergence matrix                                                                                             
+                                                                                                              
+ open point             impact   A literal       B minimal       C defensive     D performance   E ux         
+ ──────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+ delivery method           1.2   synchronous …   synchronous …   synchronous …   background j…   synchronous… 
+ schema changes            0.8   none            none            none            add table ex…   none         
+ file: app/export/cs…      1.2   yes             -               yes             -               yes          
+ file: app/jobs/expo…      0.6   -               -               -               yes             -            
+ file: app/utils/csv…      0.6   -               -               yes             -               -            
+ file: db/schema.sql       0.6   -               -               -               yes             -            
+                                                                                                              
+  + 12 more file / behaviour / scope differences (in the spec)
+  delivery method: A,B,C,E synchronous download · D background job, emailed link
+  schema changes: A,B,C,E none · D add table export_jobs (id, status, file_path, requested_by, created_at)
+
+  convergence 0.72 █████████████████░░│░░░░ threshold 0.80  below threshold: asking
+
+● ask  2 question(s), options are values the plans took
+
+  q1 Should the export download right away, or run as a background job?  (impact 1.2)
+     1. synchronous download  A,B,C,E  ← recommended: majority (A,B,C,E)
+     2. background job, emailed link  D
+
+  q2 Does this ticket need a database change?  (impact 0.8)
+     1. none  A,B,C,E  ← recommended: majority (A,B,C,E)
+     2. add table export_jobs (id, status, file_path, requested_by, created_at)  D
+
+  q1 → synchronous download  (scripted demo answer)
+  q2 → none  (scripted demo answer)
+
+● round 3  five lenses read the ticket independently · 5 settled decisions in the prompt
+  A Literal PM    S  4 files (1 new) · 3 assumptions · 4 behaviours
+  B Minimal diff  XS 3 files (0 new) · 3 assumptions · 3 behaviours
+  C Defensive     M  5 files (2 new) · 3 assumptions · 5 behaviours
+      guard untracked: app/utils/csv_helpers.py is not in git ls-files: marked new
+  D Performance   M  3 files (0 new) · 3 assumptions · 4 behaviours
+  E UX            S  5 files (2 new) · 3 assumptions · 4 behaviours
+
+divergence matrix                                                                           
+                                                                                            
+ open point             impact   A literal   B minimal   C defensive   D performance   E ux 
+ ────────────────────────────────────────────────────────────────────────────────────────── 
+ file: app/export/cs…      1.2   yes         -           yes           -               yes  
+ file: app/utils/csv…      0.6   -           -           yes           -               -    
+ file: web/src/compo…      0.6   -           -           -             -               yes  
+ behaviour: Given 10…      0.4   -           -           -             yes             -    
+                                                                                            
+  + 8 more file / behaviour / scope differences (in the spec)
+
+  convergence 0.88 ███████████████████│█░░░ threshold 0.80  converged
+
+● spec  converged after 3 round(s) · convergence 0.43 → 0.72 → 0.88 · 5 answer(s) · 4 guard correction(s)
+  written to .rashomon/runs/export-invoices-demo/spec.md

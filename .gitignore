@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+.env
+.DS_Store
+# checkpoints, store, cache and specs from local runs
+.rashomon/
+# tool and agent artifacts: never committed
+.claude/
+docs/superpowers/
+docs/plans/
+docs/specs/
+*.scratch.*
+.env.*
+!.env.example
+.mypy_cache/
+*.sqlite
+*.db
